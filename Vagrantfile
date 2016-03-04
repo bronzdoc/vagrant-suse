@@ -12,7 +12,7 @@ Vagrant.configure(2) do |config|
 
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://atlas.hashicorp.com/search.
-  config.vm.box = " webhippie/opensuse-13.2 "
+  config.vm.box = "webhippie/opensuse-13.2"
 
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
@@ -64,8 +64,28 @@ Vagrant.configure(2) do |config|
   # Enable provisioning with a shell script. Additional provisioners such as
   # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
   # documentation for more information about their specific syntax and use.
-  # config.vm.provision "shell", inline: <<-SHELL
-  #   sudo apt-get update
-  #   sudo apt-get install -y apache2
-  # SHELL
+   config.vm.provision :chef_solo do |chef|
+     chef.add_recipe "zypper"
+     chef.add_recipe "rvm"
+     chef.add_recipe "vim"
+
+     chef.json= {
+      rvm: {
+        vagrant: {
+          system_chef_solo: '/opt/chef/bin/chef-solo'
+        },
+        user_installs: [{
+          user: "vagrant",
+          rubies: ["2.2.2"],
+          global: "2.2.2",
+          default_ruby: "2.2.2",
+          gems: {
+            "2.2.2" => [{
+              name: "machinery"
+            }]
+          }
+        }]
+      }
+     }
+   end
 end
