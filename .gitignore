@@ -1,0 +1,5 @@
+/cookbooks/*
+!/cookbooks/.keep
+/.vagrant
+/tmp
+
